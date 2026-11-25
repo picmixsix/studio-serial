@@ -5,7 +5,9 @@ Job:
   type=video   : gambar yang diunggah + narasi + suara -> video MP4 (Remotion) -> dikirim ke Telegram
 Tidak ada upload otomatis ke YouTube: hasil akhir hanya dikirim ke Telegram.
 """
-import os, sys, json, re, time, shutil, asyncio, random, subprocess, datetime as dt, requests
+import os, sys, json, re, time, shutil, asyncio, random, subprocess, datetime as dt
+try: import requests          # 'check' tidak butuh requests, jadi tidak boleh gagal bila belum terpasang
+except ImportError: requests = None
 
 TG = os.environ.get('TG_TOKEN', '')
 CHAT = os.environ.get('TG_CHAT_ID', '')
