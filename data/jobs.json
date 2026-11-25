@@ -1,1 +1,11 @@
-[]
+[
+ {
+  "id": "jmwvjng6eg5w",
+  "type": "gambar",
+  "narasi": "@judul: LAMPU LALU LINTAS | BERUBAH SENDIRI\n@hari: HARI 4\n@jam: 01.18\n@lokasi: PERSIMPANGAN TIMUR\n@part: PART 1\n@ringkasan: Part 1: Kamera jalanan merekam tiang lampu merah yang berganti warna tanpa pemicu kendaraan.\n@watermark: @picmixsix.serial\n@nomor: 04\n​[latar: jalan; tokoh: berdiri/biasa; posisi: kiri; ukuran: sedang; hadap: kanan; objek: kabut; efek: gelap; kamera: diam; jeda: 1.0]\nWarga mulai membagikan rekaman dashcam yang memperlihatkan persimpangan sepi di tengah kabut tipis malam hari. Tidak ada mobil yang melintas, namun tiang sinyal utama tetap menyala terang di tengah gelap.\n​[latar: jalan; tokoh: menunjuk/kaget; posisi: tengah; ukuran: besar; hadap: kanan; masuk: kiri; objek: kilat, bayangan; efek: menyala; kamera: zoom-in; jeda: 1.5; poll: Ikut pantau rekaman=64 | Anggap cuma eror sistem=36]\nDetik berikutnya, lampu merah berubah menjadi hijau penuh lalu kembali merah berulang kali seolah ada yang menekan tombol kendali dari jarak dekat. Kilatan singkat di kejauhan menyorot bayangan samar di tepi trotoar sebelum kamera mendekat ke tiang sinyal.\n​[latar: luar; tokoh: menoleh/takut; posisi: kanan; ukuran: dekat; hadap: kiri; objek: mata, kabut; efek: merah; kamera: geser-kiri; jeda: 1.5; cta: komen 1 atau 2]\nSeorang pejalan kaki yang melintas menoleh cepat ke arah tiang saat cahaya merah memantul tajam di wajahnya. Kabut semakin menebal dan sepasang titik cahaya menyerupai mata tampak mengintip dari balik tiang sebelum rekaman terputus.",
+  "judul": "LAMPU LALU LINTAS BERUBAH SENDIRI",
+  "scenes": 1,
+  "status": "new",
+  "at": "2026-11-25T03:08:23.078Z"
+ }
+]
