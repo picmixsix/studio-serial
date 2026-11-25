@@ -9,5 +9,46 @@
   "at": "2026-11-25T05:52:42.981Z",
   "msg": "7 gambar terkirim ke Telegram",
   "finished": "2026-11-25T05:54:22.090205+00:00"
+ },
+ {
+  "id": "jmwvthguze5l",
+  "type": "video",
+  "narasi": "@judul: KONON, RUMAH NO. 13 | TIDAK PERNAH KOSONG\n@hari: HARI 7\n@jam: 23.49\n@lokasi: RUMAH NOMOR 13\n@part: PART 2\n@ringkasan: Part 1: kamu pilih masuk ke rumah itu - 56%\n\n[latar: pintu; tokoh: berdiri/biasa; masuk: kiri]\nKamu melangkah masuk.\n\n[latar: ruang-tamu; kamera: zoom-in]\nRuang tamunya rapi… terlalu rapi untuk rumah kosong.\n\n[latar: meja; tokoh: tidak-ada]\nDi meja, ada secangkir teh. Masih hangat.\n\n[latar: foto; tokoh: tidak-ada; efek: gelap, menyala]\nDi dinding, tergantung foto keluarga.\n\n[latar: foto; tokoh: menunjuk/kaget; ukuran: dekat; efek: gelap]\nKonon… salah satu wajah di foto itu… wajahmu sendiri.\n\n[latar: tangga; tokoh: menunjuk/takut; ukuran: sedang; objek: bayangan]\nLalu dari lantai atas, terdengar langkah kaki.\n\n[latar: tangga; objek: bayangan; poll: Naik ke lantai atas=52 | Ambil foto itu, lalu keluar=48; cta: komen 1 atau 2]\nKamu pilih apa?",
+  "judul": "KONON, RUMAH NO. 13 TIDAK PERNAH KOSONG",
+  "scenes": 7,
+  "images": [
+   {
+    "id": "BQACAgUAAxkDAAMWawaRoT9FPJc-9q1k3SMXbG4kLkcAAqogAAK8JDhU7qTdFRSEjaY9BA",
+    "name": "246073.png"
+   },
+   {
+    "id": "BQACAgUAAxkDAAMXawaRoykYPNpzw_3Eo2u6lyxI1EwAAqsgAAK8JDhUKu2Kg-UOhlU9BA",
+    "name": "246074.png"
+   },
+   {
+    "id": "BQACAgUAAxkDAAMYawaRpfeJgNRB1HQdyYhuLecY7zwAAqwgAAK8JDhUYVGRpOP8UqA9BA",
+    "name": "246075.png"
+   },
+   {
+    "id": "BQACAgUAAxkDAAMZawaRpljvumtCJF4XLahxKvM4l30AAq0gAAK8JDhU5xUQ4prpiPI9BA",
+    "name": "246076.png"
+   },
+   {
+    "id": "BQACAgUAAxkDAAMaawaRqGy0zrX1Dfbzyp8zSF8Dt8QAAq4gAAK8JDhUOSiobly5s7g9BA",
+    "name": "246077.png"
+   },
+   {
+    "id": "BQACAgUAAxkDAAMbawaRqvOdiN2YYEwlXiU4VbS3UJIAAq8gAAK8JDhUpmaWRN1dfq09BA",
+    "name": "246078.png"
+   },
+   {
+    "id": "BQACAgUAAxkDAAMcawaRq2Hx5ITPwPxCvnnOtf7fvh0AArAgAAK8JDhU3Nem2hkxTH89BA",
+    "name": "246079.png"
+   }
+  ],
+  "suara": "wanita",
+  "laju": "normal",
+  "status": "new",
+  "at": "2026-11-25T07:43:40.189Z"
  }
 ]
