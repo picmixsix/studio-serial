@@ -1,0 +1,43 @@
+name: bot
+on:
+  workflow_dispatch:
+    inputs:
+      task:
+        description: run
+        default: run
+  schedule:
+    - cron: '*/30 * * * *'   # cadangan kalau pemicu dari dashboard gagal
+concurrency:
+  group: bot
+  cancel-in-progress: false
+permissions:
+  contents: write
+jobs:
+  go:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Ada job baru?
+        id: chk
+        run: python bot.py check
+      - uses: actions/setup-node@v4
+        if: steps.chk.outputs.has == 'true'
+        with:
+          node-version: '22'
+      - name: Pasang dependensi
+        if: steps.chk.outputs.has == 'true'
+        run: |
+          pip install requests edge-tts
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg libnss3 libdbus-1-3 libatk1.0-0 libgbm-dev libasound2t64 libxrandr2 libxkbcommon-dev libxfixes3 libxcomposite1 libxdamage1 libcups2 || true
+          npm install --no-audit --no-fund
+      - name: Kerjakan job
+        if: steps.chk.outputs.has == 'true'
+        run: python bot.py run
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}

@@ -1,0 +1,126 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Studio Serial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef1f5;--c:#fff;--ink:#14202b;--mut:#5b6b7a;--ac:#1560d4;--bad:#c62828;--ok:#1b7f4b;--ln:#d5dce4}
+@media(prefers-color-scheme:dark){:root{--bg:#0f161d;--c:#18222c;--ink:#e8eef4;--mut:#90a0b0;--ac:#5b9bff;--bad:#ff7b72;--ok:#4cc38a;--ln:#2a3846}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,sans-serif;padding:0 0 env(safe-area-inset-bottom)}
+main{max-width:720px;margin:auto;padding:12px}button,input,select,textarea{font:inherit;color:inherit}
+button{border:1px solid var(--ln);background:var(--c);border-radius:8px;padding:8px 12px}button.pri{background:var(--ac);border-color:var(--ac);color:#fff}button:disabled{opacity:.5}
+.it{display:flex;gap:10px;background:var(--c);border:1px solid var(--ln);border-radius:10px;padding:10px;margin:8px 0;align-items:center}
+.th{width:56px;height:100px;object-fit:cover;border-radius:6px;background:var(--ln);flex:none}.tx{flex:1;min-width:0}.tx b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+small,.mut{color:var(--mut)}.bad{color:var(--bad)}.ok{color:var(--ok)}.bt{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+header{position:sticky;top:0;z-index:4;display:flex;align-items:center;gap:8px;background:var(--ac);color:#fff;padding:calc(8px + env(safe-area-inset-top)) 10px 8px}header button{background:none;border:0;color:#fff;font-size:24px;padding:0 8px}header b{font-size:17px}
+#dr{position:fixed;top:0;bottom:0;left:0;width:78%;max-width:300px;background:var(--c);z-index:8;transform:translateX(-100%);transition:transform .2s;padding:calc(16px + env(safe-area-inset-top)) 0;border-right:1px solid var(--ln);overflow:auto}#dr.open{transform:none}#sc{position:fixed;inset:0;background:#0006;z-index:7}#sc[hidden]{display:none}
+#dr .me{padding:0 16px 14px;border-bottom:1px solid var(--ln);margin-bottom:6px}#dr button{display:block;width:100%;text-align:left;border:0;border-radius:0;background:none;padding:13px 16px}#dr button.on{color:var(--ac);font-weight:700;background:var(--bg)}
+.pw{-webkit-text-security:disc}.g{display:grid;grid-template-columns:1fr 1fr;gap:8px}.g div{background:var(--c);border:1px solid var(--ln);border-radius:10px;padding:12px}.g strong{font-size:26px;display:block}
+.sp{display:inline-block;width:14px;height:14px;border:2px solid var(--ln);border-top-color:var(--ac);border-radius:50%;animation:spin .8s linear infinite;vertical-align:-2px;margin-right:6px}@keyframes spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){#dr{transition:none}.sp{animation-duration:2.5s}}
+label{display:block;margin:10px 0 2px}textarea,input:not([type=checkbox]):not([type=file]),select{width:100%;padding:8px;border:1px solid var(--ln);border-radius:8px;background:var(--bg)}
+textarea.nar{font:13.5px/1.5 ui-monospace,Menlo,Consolas,monospace;min-height:260px}
+#t{position:fixed;left:12px;right:12px;bottom:80px;background:var(--ink);color:var(--bg);padding:10px;border-radius:8px;z-index:9}#t:empty{display:none}
+.pv{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-top:8px}.pv figure{margin:0;background:#000;border-radius:8px;overflow:hidden;position:relative}.pv svg{width:100%;height:auto}.pv figcaption{position:absolute;left:4px;top:4px;background:#000a;color:#fff;font-size:11px;padding:1px 6px;border-radius:6px}
+.warn{background:color-mix(in srgb,var(--bad) 12%,var(--c));border:1px solid var(--bad);border-radius:8px;padding:8px 10px;margin:8px 0;font-size:13px}
+table{border-collapse:collapse;width:100%;font-size:13.5px}td,th{border-bottom:1px solid var(--ln);padding:5px 6px;text-align:left;vertical-align:top}code{background:var(--bg);padding:1px 5px;border-radius:4px}pre{background:var(--c);border:1px solid var(--ln);border-radius:8px;padding:10px;overflow:auto;font-size:13px}
+.it .th{height:70px}
+</style></head><body><header><button onclick="menu(1)" aria-label="Menu">&#9776;</button><b id=ttl>Dashboard</b></header><div id=sc hidden onclick="menu(0)"></div><aside id=dr><div class=me><b>Studio Serial</b><br><small id=who></small></div><button data-t=dash>Dashboard</button><button data-t=gambar>Buat Gambar</button><button data-t=video>Buat Video</button><button data-t=riwayat>Riwayat</button><button data-t=tag>Panduan Tag</button><button data-t=set>Profil &amp; Token</button></aside><main></main><div id=t></div>
+<script type="module">
+import {parseNarasi} from './src/lib/parse.js';
+import {renderPreview,LATAR,POSE,EKSPRESI,OBJEK,KAMERA,EFEK,UKURAN,POSISI,MASUK} from './src/art/index.js';
+const $=s=>document.querySelector(s),E=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])),u8=s=>new TextEncoder().encode(s),b64=a=>{let s='';for(let i=0;i<a.length;i+=8192)s+=String.fromCharCode.apply(null,a.subarray(i,i+8192));return btoa(s)};
+const L=(()=>{try{localStorage.setItem('_t','1');localStorage.removeItem('_t');return localStorage}catch{const m={};return new Proxy(m,{get:(t,k)=>t[k],set:(t,k,v)=>(t[k]=v,true),deleteProperty:(t,k)=>delete t[k]})}})();
+let STEP='',tab='dash',S={jobs:[]},IMG=[];
+const gh=(p,o={})=>(STEP=(o.method||'GET')+' '+(p||'repo'),fetch(('https://api.github.com/repos/'+L.repo+'/'+p).replace(/\/$/,''),{...o,headers:{Authorization:'Bearer '+L.gt,Accept:'application/vnd.github+json'}}));
+const toast=m=>{$('#t').textContent=m;clearTimeout(toast.i);toast.i=setTimeout(()=>$('#t').textContent='',4000)};
+async function rd(f){const r=await gh('contents/data/'+f);if(!r.ok)return{d:null};const j=await r.json();return{d:JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(j.content.replace(/\n/g,'')),c=>c.charCodeAt(0)))),sha:j.sha}}
+async function upd(f,def,fn){for(let i=0;i<3;i++){const{d,sha}=await rd(f),n=fn(d??def),r=await gh('contents/data/'+f,{method:'PUT',body:JSON.stringify({message:'web '+f,content:b64(u8(JSON.stringify(n,null,1))),sha})});if(r.ok)return n}throw Error('Gagal menyimpan '+f+', coba lagi')}
+const guess=()=>{const p=location.pathname.split('/')[1];return location.hostname.endsWith('.github.io')&&p?location.hostname.split('.')[0]+'/'+p:''};
+const fmt=s=>s?new Date(s).toLocaleString('id-ID',{dateStyle:'short',timeStyle:'short'}):'';
+const ST={new:'<span class=sp></span>Menunggu bot',processing:'<span class=sp></span>Sedang dikerjakan',done:'<span class=ok>Selesai, cek Telegram</span>',error:'<span class=bad>Gagal</span>'};
+const CONTOH=`@judul: KONON, RUMAH NO. 13 | TIDAK PERNAH KOSONG
+@hari: HARI 7
+@jam: 23.49
+@lokasi: RUMAH NOMOR 13
+@part: PART 2
+@ringkasan: Part 1: kamu pilih masuk ke rumah itu - 56%
+
+[latar: pintu; tokoh: berdiri/biasa; masuk: kiri]
+Kamu melangkah masuk.
+
+[latar: ruang-tamu; kamera: zoom-in]
+Ruang tamunya rapi… terlalu rapi untuk rumah kosong.
+
+[latar: meja; tokoh: tidak-ada]
+Di meja, ada secangkir teh. Masih hangat.
+
+[latar: foto; tokoh: tidak-ada; efek: gelap, menyala]
+Di dinding, tergantung foto keluarga.
+
+[latar: foto; tokoh: menunjuk/kaget; ukuran: dekat; efek: gelap]
+Konon… salah satu wajah di foto itu… wajahmu sendiri.
+
+[latar: tangga; tokoh: menunjuk/takut; ukuran: sedang; objek: bayangan]
+Lalu dari lantai atas, terdengar langkah kaki.
+
+[latar: tangga; objek: bayangan; poll: Naik ke lantai atas=52 | Ambil foto itu, lalu keluar=48; cta: komen 1 atau 2]
+Kamu pilih apa?`;
+const menu=o=>{$('#dr').classList.toggle('open',!!o);$('#sc').hidden=!o};
+const go=t=>{if(tab=='gambar'&&$('#g_nar'))L.dg=$('#g_nar').value;if(tab=='video'&&$('#v_nar'))L.dv=$('#v_nar').value;tab=t;menu(0);draw();if(t!='set')safeLoad()};
+document.querySelectorAll('#dr button').forEach(b=>b.onclick=()=>go(b.dataset.t));
+const safeLoad=()=>load().catch(e=>toast('Gagal memuat: '+(e.message=='Failed to fetch'?STEP:e.message)));
+async function load(){if(!L.gt){tab='set';return draw()}const j=await rd('jobs.json');S.jobs=j.d||[];if(!['gambar','video','set'].includes(tab))draw();else if(tab!='set')status()}
+function status(){const e=$('#jobst');if(e){const a=S.jobs.filter(x=>x.status=='new'||x.status=='processing');e.innerHTML=a.length?'<span class=sp></span>'+a.length+' job sedang dikerjakan, hasilnya dikirim ke Telegram.':''}}
+function rows(a){return a.slice().reverse().map(x=>`<div class=it><div class=tx><b>${x.type=='video'?'Video':'Gambar'}: ${E(x.judul||(x.narasi||'').split('\n').find(l=>l&&!l.startsWith('@')&&!l.startsWith('['))||'-')}</b><small>${fmt(x.at)} · ${x.scenes||'?'} adegan${x.suara?' · suara '+E(x.suara):''}</small><br><small>${ST[x.status]||x.status}${x.msg&&x.status!='new'?' · '+E(x.msg):''}</small></div><button onclick="delJ('${x.id}')">Hapus</button></div>`).join('')||'<p class=mut>Belum ada job.</p>'}
+function draw(){document.querySelectorAll('#dr button').forEach(b=>b.classList.toggle('on',b.dataset.t==tab));$('#ttl').textContent={dash:'Dashboard',gambar:'Buat Gambar',video:'Buat Video',riwayat:'Riwayat',tag:'Panduan Tag',set:'Profil & Token'}[tab];$('#who').textContent=L.repo||'Belum diatur';const m=$('main');
+if(tab=='dash'){const c=k=>S.jobs.filter(x=>x.status==k).length;m.innerHTML=`<div class=g><div onclick="go('riwayat')"><strong>${S.jobs.length}</strong>Job</div><div onclick="go('riwayat')"><strong>${c('done')}</strong>Selesai</div><div><strong>${c('new')+c('processing')}</strong>Diproses</div><div><strong class="${c('error')?'bad':''}">${c('error')}</strong>Gagal</div></div><div class=bt style="margin:12px 0"><button class=pri onclick="go('gambar')">1. Buat gambar adegan</button><button class=pri onclick="go('video')">2. Buat video</button></div><p class=mut>Alur: tempel narasi, bot merender gambar tiap adegan dan mengirimnya ke Telegram. Unduh gambarnya, lalu di Buat Video unggah gambar itu bersama narasi dan pilih suara. Video jadi dikirim ke Telegram.</p><div id=jobst></div>`;status()}
+if(tab=='gambar'){if(!$('#g_nar')){m.innerHTML=`<p class=mut>Tempel narasi (boleh bertag). Satu adegan = satu paragraf, dipisah baris kosong. Lihat Panduan Tag untuk pilihan latar, pose, dan efek.</p><textarea class=nar id=g_nar spellcheck=false oninput="chk('g')">${E(L.dg||'')}</textarea><div class=bt><button onclick="ex('g')">Isi contoh</button><button onclick="pv('g')">Pratinjau cepat</button><button class=pri id=g_btn onclick="sendG()">Render &amp; kirim ke Telegram</button></div><div id=g_info class=mut></div><div id=g_w></div><div id=g_pv class=pv></div><div id=jobst></div>`;chk('g')}status()}
+if(tab=='video'){if(!$('#v_nar')){m.innerHTML=`<p class=mut>Pakai narasi yang sama dengan Buat Gambar. Gambar boleh dikosongkan: bot merender adegan langsung dengan animasi (tokoh bernapas, uap, kamera). Isi gambar hanya jika ingin memakai gambar sendiri untuk semua adegan.</p><label>Narasi</label><textarea class=nar id=v_nar spellcheck=false oninput="chk('v')">${E(L.dv||L.dg||'')}</textarea><label>Suara narator</label><select id=v_suara><option value=wanita>Wanita (Gadis)</option><option value=pria>Pria (Ardi)</option></select><label>Kecepatan suara</label><select id=v_laju><option value=pelan>Pelan</option><option value=normal selected>Normal</option><option value=cepat>Cepat</option></select><label>Gambar adegan (opsional)</label><input type=file id=v_file accept="image/*" multiple onchange="pick(this)"><div id=v_list></div><div id=v_info class=mut></div><div id=v_w></div><div class=bt style="margin-top:12px"><button class=pri id=v_btn onclick="sendV()">Buat video &amp; kirim ke Telegram</button></div><div id=jobst></div>`;chk('v');imgs()}status()}
+if(tab=='riwayat')m.innerHTML=rows(S.jobs);
+if(tab=='tag')m.innerHTML=guide();
+if(tab=='set')m.innerHTML=`<label>Repo (pemilik/nama)</label><input autocomplete=off id=s1 value="${E(L.repo||guess())}" placeholder="namaakun/namarepo"><label>Token GitHub (fine-grained: Contents, Actions, Secrets = read/write)</label><input autocomplete=off id=s2 class=pw value="${E(L.gt||'')}"><label>Token bot Telegram</label><input autocomplete=off id=s6 class=pw value="${E(L.tg||'')}"><label>Chat ID Telegram</label><input autocomplete=off id=s7 value="${E(L.cid||'')}"><div class=bt><button onclick="cid()">Deteksi Chat ID</button></div><div class=bt><button class=pri onclick="setS()">Simpan &amp; sinkronkan ke GitHub</button><button onclick="tes()">Tes koneksi GitHub</button></div><p class=mut>Token disimpan di browser ini, lalu dikirim terenkripsi ke GitHub Secrets (TG_TOKEN, TG_CHAT_ID) agar bot bisa memakainya.</p>`}
+const list=a=>a.map(x=>`<code>${x}</code>`).join(' ');
+function guide(){return `<p><b>Header</b> (opsional, satu baris per kunci, awali <code>@</code>)</p><pre>@judul: BARIS PUTIH | BARIS KUNING
+@hari: HARI 7
+@jam: 23.49
+@lokasi: RUMAH NOMOR 13
+@part: PART 2
+@ringkasan: Part 1: ... (tampil di adegan pertama)
+@watermark: teks kecil di kanan atas
+@nomor: 13   (plat nomor di latar luar)</pre><p><b>Adegan</b>: satu paragraf = satu adegan. Tag di baris sendiri sebelum teks, dipisah titik koma:</p><pre>[latar: tangga; tokoh: menunjuk/takut; kamera: zoom-in]
+Lalu dari lantai atas, terdengar langkah kaki.</pre><table><tr><th>Tag</th><th>Nilai</th></tr><tr><td>latar</td><td>${list(LATAR)}<br><small>Kalau tidak ditulis, memakai latar adegan sebelumnya.</small></td></tr><tr><td>tokoh</td><td>pose ${list(POSE)} dan/atau ekspresi ${list(EKSPRESI)}, contoh <code>menunjuk/kaget</code>. <code>tidak-ada</code> untuk tanpa tokoh.</td></tr><tr><td>posisi</td><td>${list(POSISI)}</td></tr><tr><td>ukuran</td><td>${list(UKURAN)} (dekat = close-up wajah)</td></tr><tr><td>hadap</td><td><code>kiri</code> <code>kanan</code></td></tr><tr><td>masuk</td><td><code>kiri</code> <code>kanan</code>: tokoh berjalan masuk dari tepi layar (hanya terlihat di video)</td></tr><tr><td>objek</td><td>${list(OBJEK)} (boleh lebih dari satu, pisah koma)</td></tr><tr><td>efek</td><td>${list(EFEK)} (<code>menyala</code> = adegan terang bertahap dari gelap, di video)</td></tr><tr><td>kamera</td><td>${list(KAMERA)} (hanya berpengaruh di video; bawaan bergantian)</td></tr><tr><td>masuk</td><td>${list(MASUK)} (tokoh berjalan masuk dari tepi layar)</td></tr><tr><td>jeda</td><td>tambahan detik diam setelah suara, contoh <code>jeda: 1.5</code></td></tr><tr><td>poll</td><td><code>poll: Pilihan A=52 | Pilihan B=48</code> (2 sampai 4 pilihan)</td></tr><tr><td>cta</td><td>teks ajakan kuning di bawah, contoh <code>cta: komen 1 atau 2</code></td></tr></table><p class=mut>Baris berawal <code>#</code> diabaikan. Judul, jam, poll, dan subtitle dipasang saat video dirender, jadi gambar adegan dari Telegram bersih dari teks.</p>`}
+function chk(k){const t=$('#'+k+'_nar').value,{scenes,warnings}=parseNarasi(t);L['d'+k]=t;$('#'+k+'_w').innerHTML=warnings.length?`<div class=warn>${warnings.slice(0,8).map(E).join('<br>')}${warnings.length>8?'<br>...':''}</div>`:'';if(k=='g')$('#g_info').textContent=scenes.length?scenes.length+' adegan terbaca':'';else info()}
+window.ex=k=>{$('#'+k+'_nar').value=CONTOH;chk(k)};
+window.play=i=>{const f=document.querySelectorAll('#g_pv figure')[i];if(!f)return;if(f._raf){cancelAnimationFrame(f._raf);f._raf=0;return}const{header,scenes}=parseNarasi($('#g_nar').value),sc=scenes[i],t0=performance.now(),D=4500,tick=now=>{const s=(now-t0)/1000,p=Math.min(1,(now-t0)/D);f.querySelector('svg').outerHTML=renderPreview(sc,header,{t:s,ta:s,cam:{kind:sc.kamera,p},index:i,count:scenes.length});f.querySelector('figcaption').textContent=i+1;f._raf=now-t0<D?requestAnimationFrame(tick):0;if(!f._raf)f.querySelector('svg').outerHTML=renderPreview(sc,header,{index:i,count:scenes.length})};f._raf=requestAnimationFrame(tick)};
+window.pv=k=>{const{header,scenes}=parseNarasi($('#'+k+'_nar').value);$('#g_pv').innerHTML=scenes.map((s,i)=>`<figure onclick="play(${i})"><figcaption>${i+1}</figcaption>${renderPreview(s,header,{index:i,count:scenes.length})}</figure>`).join('')||'<p class=mut>Belum ada adegan.</p>'};
+function info(){const n=parseNarasi($('#v_nar').value).scenes.length,m=IMG.length,e=$('#v_info');e.innerHTML=`${n} adegan di narasi. `+(m==0?'<span class=ok>Tanpa gambar: dirender langsung (animasi).</span>':`${m} gambar dipilih ${n&&n==m?'<span class=ok>(cocok)</span>':'<span class=bad>(jumlah harus sama dengan adegan)</span>'}`)}
+function imgs(){const e=$('#v_list');if(!e)return;e.innerHTML=IMG.map((f,i)=>`<div class=it><img class=th src="${f.url}" alt=""><div class=tx><b>${i+1}. ${E(f.file.name)}</b><small>${(f.file.size/1e6).toFixed(1)} MB${f.file.size>19e6?' <span class=bad>lebih dari 19 MB, terlalu besar</span>':''}</small></div><div class=bt><button onclick="mv(${i},-1)">&uarr;</button><button onclick="mv(${i},1)">&darr;</button><button onclick="rm(${i})">&times;</button></div></div>`).join('');info()}
+window.pick=i=>{IMG.forEach(f=>URL.revokeObjectURL(f.url));IMG=[...i.files].sort((a,b)=>a.name.localeCompare(b.name,undefined,{numeric:true})).map(file=>({file,url:URL.createObjectURL(file)}));imgs()};
+window.mv=(i,d)=>{const j=i+d;if(j<0||j>=IMG.length)return;[IMG[i],IMG[j]]=[IMG[j],IMG[i]];imgs()};window.rm=i=>{IMG.splice(i,1);imgs()};
+async function tgJson(method,fd){const r=await fetch('https://api.telegram.org/bot'+L.tg+'/'+method,{method:'POST',body:fd}),j=await r.json();if(!j.ok)throw Error('Telegram: '+(j.description||r.status));return j.result}
+async function dispatch(){const r=await gh('actions/workflows/bot.yml/dispatches',{method:'POST',body:JSON.stringify({ref:'main',inputs:{task:'run'}})});if(!r.ok)toast('Bot gagal dijalankan ('+r.status+'). Job tersimpan, bot juga cek tiap 30 menit.');return r.ok}
+const newId=()=>'j'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+const pollLater=()=>[20e3,45e3,90e3,180e3].forEach(t=>setTimeout(()=>{if(L.gt)safeLoad()},t));
+window.sendG=async()=>{const t=$('#g_nar').value,{header,scenes,warnings}=parseNarasi(t);if(!scenes.length)return toast('Narasi masih kosong');if(!L.gt)return toast('Isi Profil & Token dulu');const b=$('#g_btn');b.disabled=true;
+try{const job={id:newId(),type:'gambar',narasi:t,judul:(header.titleLines||[]).join(' '),scenes:scenes.length,status:'new',at:new Date().toISOString()};S.jobs=await upd('jobs.json',[],a=>[...a.slice(-39),job]);await dispatch();toast('Dikirim. Gambar tiba di Telegram dalam beberapa menit.');pollLater();go('riwayat')}catch(e){toast(e.message=='Failed to fetch'?'Gagal terhubung saat: '+STEP:e.message)}b.disabled=false};
+window.sendV=async()=>{const t=$('#v_nar').value,{header,scenes}=parseNarasi(t);if(!scenes.length)return toast('Narasi masih kosong');if(IMG.length&&scenes.length!=IMG.length)return toast('Jumlah adegan ('+scenes.length+') harus sama dengan jumlah gambar ('+IMG.length+'), atau kosongkan gambar');if(IMG.some(f=>f.file.size>19e6))return toast('Ada gambar lebih dari 19 MB');if(!L.gt)return toast('Isi Profil & Token dulu');if(IMG.length&&(!L.tg||!L.cid))return toast('Isi token bot dan Chat ID dulu');const b=$('#v_btn');b.disabled=true;
+try{const ids=[];for(let i=0;i<IMG.length;i++){toast('Mengunggah gambar '+(i+1)+' dari '+IMG.length+'...');const fd=new FormData();fd.append('chat_id',L.cid);fd.append('disable_notification','true');fd.append('document',IMG[i].file,IMG[i].file.name);const r=await tgJson('sendDocument',fd);ids.push({id:r.document.file_id,name:IMG[i].file.name})}
+const job={id:newId(),type:'video',narasi:t,judul:(header.titleLines||[]).join(' '),scenes:scenes.length,images:ids.length?ids:undefined,suara:$('#v_suara').value,laju:$('#v_laju').value,status:'new',at:new Date().toISOString()};S.jobs=await upd('jobs.json',[],a=>[...a.slice(-39),job]);await dispatch();toast('Dikirim. Video tiba di Telegram dalam beberapa menit.');pollLater();go('riwayat')}catch(e){toast(e.message=='Failed to fetch'?'Gagal terhubung ke Telegram atau GitHub. Coba lagi':e.message)}b.disabled=false};
+window.delJ=async id=>{if(!confirm('Hapus dari daftar?'))return;try{S.jobs=await upd('jobs.json',[],a=>a.filter(x=>x.id!=id));draw()}catch(e){toast(e.message)}};
+window.setS=async()=>{const g=s=>$(s).value.trim(),pm=g('#s1').match(/^(?:https?:\/\/)?([\w-]+)\.github\.io(?:\/([\w.-]+))?/),R=pm?(pm[2]?pm[1]+'/'+pm[2]:guess()):g('#s1').replace(/^https?:\/\/github\.com\//,'').replace(/\.git$/,'').replace(/\/$/,'');
+if(!/^[\w.-]+\/[\w.-]+$/.test(R))return toast('Repo harus berbentuk namaakun/namarepo');if(!/^(github_pat_|ghp_)/.test(g('#s2')))return toast('Token GitHub tidak valid: harus diawali github_pat_ atau ghp_');if(g('#s7')&&!/^-?\d+$/.test(g('#s7')))return toast('Chat ID harus angka, ketuk Deteksi Chat ID');
+L.repo=R;L.gt=g('#s2');L.tg=g('#s6');L.cid=g('#s7');
+try{const c=await gh('');if(c.status==401)throw Error('Token GitHub ditolak (salah atau kedaluwarsa)');if(c.status==404)throw Error('Repo tidak ditemukan atau token tidak diberi akses ke repo ini');if(L.tg)await sec('TG_TOKEN',L.tg);if(L.cid)await sec('TG_CHAT_ID',L.cid);toast('Tersimpan dan disinkronkan');tab='dash';load()}catch(e){toast(e.message=='Failed to fetch'?'Gagal terhubung saat: '+STEP:e.message)}};
+window.tes=async()=>{const t=async f=>{try{return(await f()).status}catch{return'GAGAL'}},R=guess()||$('#s1').value.trim(),x=await t(()=>fetch('https://api.github.com/zen')),y=await t(()=>fetch('https://api.github.com/repos/'+R,{headers:{Authorization:'Bearer '+$('#s2').value.trim()}}));alert('Tanpa token: '+x+'\nDengan token: '+y+'\nPustaka enkripsi: '+await loadNacl().then(()=>'OK',()=>'GAGAL')+'\n\n200 = normal, 401 = token salah, 404 = token tak punya akses ke repo, GAGAL = jaringan memblokir')};
+window.cid=async()=>{try{const j=await(await fetch(`https://api.telegram.org/bot${$('#s6').value.trim()}/getUpdates`)).json(),m=j.result.reverse().find(u=>u.message);$('#s7').value=m.message.chat.id;toast('Chat ID ditemukan')}catch{toast('Kirim dulu satu pesan ke bot, lalu coba lagi')}};
+window.chk=chk;window.menu=menu;window.go=go;
+load().then(()=>{if(L.gt)draw()}).catch(e=>toast('Gagal memuat: '+(e.message=='Failed to fetch'?STEP:e.message)));
+setInterval(()=>{if(L.gt&&['dash','riwayat'].includes(tab)&&S.jobs.some(x=>x.status=='new'||x.status=='processing'))safeLoad()},10000);
+
+const M64=(1n<<64n)-1n,IV=[0x6a09e667f3bcc908n,0xbb67ae8584caa73bn,0x3c6ef372fe94f82bn,0xa54ff53a5f1d36f1n,0x510e527fade682d1n,0x9b05688c2b3e6c1fn,0x1f83d9abfb41bd6bn,0x5be0cd19137e2179n],SG=[[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],[14,10,4,8,9,15,13,6,1,12,0,2,11,7,5,3],[11,8,12,0,5,2,15,13,10,14,3,6,7,1,9,4],[7,9,3,1,13,12,11,14,2,6,5,10,4,0,15,8],[9,0,5,7,2,4,10,15,14,1,11,12,6,8,3,13],[2,12,6,10,0,11,8,3,4,13,7,5,15,14,1,9],[12,5,1,15,14,13,4,10,0,7,6,3,9,2,8,11],[13,11,7,14,12,1,3,9,5,0,15,4,8,6,2,10],[6,15,14,9,11,3,0,8,12,2,13,7,1,4,10,5],[10,2,8,4,7,6,1,5,15,11,9,14,3,12,13,0]];
+function b2b(inp,n){const m=Array(16).fill(0n),h=IV.slice();for(let i=0;i<inp.length;i++)m[i>>3]|=BigInt(inp[i])<<BigInt(8*(i&7));h[0]^=0x01010000n^BigInt(n);const v=h.concat(IV);v[12]^=BigInt(inp.length);v[14]^=M64;
+const R=(x,k)=>((x>>BigInt(k))|(x<<BigInt(64-k)))&M64,G=(a,b,c,d,x,y)=>{v[a]=(v[a]+v[b]+x)&M64;v[d]=R(v[d]^v[a],32);v[c]=(v[c]+v[d])&M64;v[b]=R(v[b]^v[c],24);v[a]=(v[a]+v[b]+y)&M64;v[d]=R(v[d]^v[a],16);v[c]=(v[c]+v[d])&M64;v[b]=R(v[b]^v[c],63)};
+for(let r=0;r<12;r++){const s=SG[r%10];G(0,4,8,12,m[s[0]],m[s[1]]);G(1,5,9,13,m[s[2]],m[s[3]]);G(2,6,10,14,m[s[4]],m[s[5]]);G(3,7,11,15,m[s[6]],m[s[7]]);G(0,5,10,15,m[s[8]],m[s[9]]);G(1,6,11,12,m[s[10]],m[s[11]]);G(2,7,8,13,m[s[12]],m[s[13]]);G(3,4,9,14,m[s[14]],m[s[15]])}
+const o=new Uint8Array(n);for(let i=0;i<n;i++)o[i]=Number(((h[i>>3]^v[i>>3]^v[(i>>3)+8])>>BigInt(8*(i&7)))&0xffn);return o}
+function seal(msg,pk){const k=nacl.box.keyPair(),inp=new Uint8Array(64);inp.set(k.publicKey);inp.set(pk,32);const c=nacl.box(msg,b2b(inp,24),pk,k.secretKey),o=new Uint8Array(32+c.length);o.set(k.publicKey);o.set(c,32);return o}
+async function loadNacl(){if(window.nacl&&nacl.box)return;for(const u of['https://cdn.jsdelivr.net','https://fastly.jsdelivr.net','https://gcore.jsdelivr.net']){try{await new Promise((ok,no)=>{const s=document.createElement('script');s.src=u+'/npm/tweetnacl@1.0.3/nacl-fast.min.js';s.onload=ok;s.onerror=no;document.head.append(s)});if(window.nacl)return}catch{}}throw Error('Pustaka enkripsi gagal dimuat dari semua sumber. Coba ganti jaringan, atau tambahkan secret secara manual')}
+async function sec(n,v){await loadNacl();const pr=await gh('actions/secrets/public-key');if(!pr.ok)throw Error('Token GitHub belum punya izin Secrets (read & write), kode '+pr.status);const pk=await pr.json(),k=Uint8Array.from(atob(pk.key),c=>c.charCodeAt(0)),r=await gh('actions/secrets/'+n,{method:'PUT',body:JSON.stringify({encrypted_value:btoa(String.fromCharCode(...seal(u8(v),k))),key_id:pk.key_id})});if(!r.ok)throw Error('Gagal simpan secret '+n+' ('+r.status+')')}
+</script></body></html>

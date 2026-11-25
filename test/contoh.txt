@@ -1,0 +1,28 @@
+@judul: KONON, RUMAH NO. 13 | TIDAK PERNAH KOSONG
+@hari: HARI 7
+@jam: 23.49
+@lokasi: RUMAH NOMOR 13
+@part: PART 2
+@ringkasan: Part 1: kamu pilih masuk ke rumah itu - 56%
+@nomor: 13
+
+[latar: pintu; tokoh: berdiri/biasa; masuk: kiri]
+Kamu melangkah masuk.
+
+[latar: ruang-tamu; kamera: zoom-in]
+Ruang tamunya rapi… terlalu rapi untuk rumah kosong.
+
+[latar: meja; tokoh: tidak-ada]
+Di meja, ada secangkir teh. Masih hangat.
+
+[latar: foto; tokoh: tidak-ada; efek: gelap, menyala]
+Di dinding, tergantung foto keluarga.
+
+[latar: foto; tokoh: menunjuk/kaget; ukuran: dekat; efek: gelap]
+Konon… salah satu wajah di foto itu… wajahmu sendiri.
+
+[latar: tangga; tokoh: menunjuk/takut; posisi: kiri; ukuran: sedang; objek: bayangan; efek: ]
+Lalu dari lantai atas, terdengar langkah kaki.
+
+[latar: tangga; tokoh: menunjuk/takut; objek: bayangan; poll: Naik ke lantai atas=52 | Ambil foto itu, lalu keluar=48; cta: komen 1 atau 2]
+Kamu pilih apa?
