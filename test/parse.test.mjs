@@ -27,4 +27,7 @@ assert.ok(w.warnings.length >= 4, w.warnings.join('|')); assert.equal(w.scenes[0
 const q = parseNarasi('# komentar\n@aneh: x\n[latar: dapur] Teks sebaris')
 assert.equal(q.scenes[0].text, 'Teks sebaris'); assert.equal(q.scenes[0].latar, 'dapur'); assert.equal(q.warnings.length, 1)
 assert.equal(parseNarasi('').warnings.length, 1)
+// karakter tak terlihat (zero-width space) di depan tag tidak boleh membuat tag bocor ke teks
+const z = parseNarasi('\u200B[latar: jalan; tokoh: berdiri/biasa]\nHalo dunia')
+assert.equal(z.scenes[0].text, 'Halo dunia'); assert.equal(z.scenes[0].latar, 'jalan')
 console.log('semua tes parser lulus')
