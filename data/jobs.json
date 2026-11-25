@@ -48,7 +48,9 @@
   ],
   "suara": "wanita",
   "laju": "normal",
-  "status": "processing",
-  "at": "2026-11-25T07:43:40.189Z"
+  "status": "done",
+  "at": "2026-11-25T07:43:40.189Z",
+  "msg": "video terkirim (36 dtk)",
+  "finished": "2026-11-25T07:46:12.574220+00:00"
  }
 ]
