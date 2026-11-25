@@ -113,7 +113,10 @@ export function parseNarasi(raw) {
     cur = null
   }
 
-  for (const line0 of String(raw || '').replace(/\r/g, '').split('\n')) {
+  // buang karakter tak terlihat (zero-width space, BOM, dll.) yang sering ikut tersalin dari chat/AI
+  // dan membuat baris "[latar: ...]" tidak dikenali sebagai tag
+  const clean = String(raw || '').replace(/[\u200B-\u200D\u2060\uFEFF\u00AD]/g, '').replace(/\u00A0/g, ' ')
+  for (const line0 of clean.replace(/\r/g, '').split('\n')) {
     const line = line0.trim()
     if (!line) { flush(); continue }
     if (line.startsWith('#')) continue
