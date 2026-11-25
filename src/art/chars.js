@@ -1,6 +1,11 @@
 import { lin, rad, r2 } from './util.js'
 
 const SKIN = '#e2a27b', HOOD = '#e8632b', HOOD_D = '#c24d1d', LEG = '#1f2d5c', INK = '#3a2018', MOUTH = '#5a2a22'
+// warna baju tokoh: [utama, bayangan]
+export const BAJU_WARNA = {
+  oranye: [HOOD, HOOD_D], biru: ['#2f7bd8', '#1f5aa8'], hijau: ['#3aa86a', '#277a4c'], kuning: ['#e8b92b', '#b58e1a'],
+  ungu: ['#8a5ad8', '#6439a8'], merah: ['#d83a3a', '#a82424'], hitam: ['#3a3a44', '#24242c'], putih: ['#e8e8ef', '#b8b8c4'], pink: ['#e86aa8', '#b84a82'],
+}
 
 function face(ex, blink) {
   const brow = (a, b, c, d) => `<line x1="${a}" y1="${b}" x2="${c}" y2="${d}" stroke="${INK}" stroke-width="6" stroke-linecap="round"/>`
@@ -32,18 +37,20 @@ function face(ex, blink) {
 }
 
 // Tokoh berhoodie oranye. Titik (0,0) = tengah telapak kaki. Tinggi sekitar 580 satuan. Semua gerak fungsi dari t (detik).
-export function tokoh({ pose = 'berdiri', ekspresi = 'biasa', x = 540, y = 1560, s = 1, flip = false, t = 0, u = 'c' }) {
+export function tokoh({ pose = 'berdiri', ekspresi = 'biasa', x = 540, y = 1560, s = 1, flip = false, t = 0, u = 'c', baju = 'oranye' }) {
+  const [HOOD, HOOD_D] = BAJU_WARNA[baju] || BAJU_WARNA.oranye
   const limb = (x1, y1, x2, y2, c, w = 44) => `<line x1="${r2(x1)}" y1="${r2(y1)}" x2="${r2(x2)}" y2="${r2(y2)}" stroke="${c}" stroke-width="${w}" stroke-linecap="round"/>`
   const hand = (hx, hy) => `<circle cx="${r2(hx)}" cy="${r2(hy)}" r="21" fill="${SKIN}"/>`
   const shoe = (sx, sy) => `<ellipse cx="${r2(sx)}" cy="${r2(sy)}" rx="34" ry="15" fill="#2a2a2a"/>`
-  const walking = pose === 'jalan'
-  const sw = Math.sin(t * 8)
+  const run = pose === 'berlari'
+  const walking = pose === 'jalan' || run
+  const sw = Math.sin(t * (run ? 13 : 8))
   const br = walking ? r2(-Math.abs(sw) * 7) : r2(Math.sin(t * 2.2) * 3)
   const sway = Math.sin(t * 1.6) * 5
   const blink = (t % 3.7) > 3.58
-  let legs, armL, armR, extra = ''
+  let legs, armR, armL, extra = '', over = ''
   if (walking) {
-    const a = sw * 0.5, fx = k => -24 * k + Math.sin(k * a) * 150 * -1, fy = k => -175 + Math.cos(a) * 150
+    const a = sw * (run ? 0.8 : 0.5), fx = k => -24 * k + Math.sin(k * a) * 150 * -1, fy = k => -175 + Math.cos(a) * 150
     const lf = [-24 + Math.sin(a) * 150, -175 + Math.cos(a) * 150], rf = [24 + Math.sin(-a) * 150, -175 + Math.cos(a) * 150]
     legs = limb(-24, -175, lf[0], lf[1], LEG, 40) + limb(24, -175, rf[0], rf[1], LEG, 40) + shoe(lf[0] + 6, lf[1] + 12) + shoe(rf[0] + 6, rf[1] + 12)
     armL = limb(-78, -360, -78 + Math.sin(-a) * 120, -360 + Math.cos(a) * 120, HOOD) + hand(-78 + Math.sin(-a) * 124, -360 + Math.cos(a) * 124)
@@ -66,6 +73,14 @@ export function tokoh({ pose = 'berdiri', ekspresi = 'biasa', x = 540, y = 1560,
     armL = limb(-78, -360, -165 + sh, -560, HOOD) + hand(-168 + sh, -582)
     armR = limb(78, -360, 165 - sh, -560, HOOD) + hand(168 - sh, -582)
   }
+  if (pose === 'melambai') {
+    const w = Math.sin(t * 9) * 22
+    armR = limb(78, -360, 172 + w * 0.6, -548, HOOD) + hand(172 + w, -568)
+  }
+  if (pose === 'menutup-wajah') {
+    armL = limb(-78, -360, -58, -468, HOOD); armR = limb(78, -360, 58, -468, HOOD)
+    over = [-34, 34].map(hx => `<circle cx="${hx}" cy="-474" r="27" fill="${SKIN}" stroke="#a8643f" stroke-width="5"/>`).join('')
+  }
   const back = pose === 'membelakangi'
   const body = `<path d="M-90,-150 L-90,-330 Q-90,-412 0,-412 Q90,-412 90,-330 L90,-150 Z" fill="${HOOD}"/>` +
     `<rect x="-90" y="-176" width="180" height="26" fill="${HOOD_D}"/>` +
@@ -81,7 +96,7 @@ export function tokoh({ pose = 'berdiri', ekspresi = 'biasa', x = 540, y = 1560,
     (back ? `<path d="M0,-584 Q-30,-480 0,-380" fill="none" stroke="${HOOD_D}" stroke-width="5"/>` : '') + faceSvg + '</g>'
   return `<g transform="translate(${r2(x)},${r2(y)}) scale(${flip ? -s : s},${s})">` +
     `<ellipse cx="0" cy="-4" rx="120" ry="18" fill="#000" opacity=".28"/>` +
-    legs + `<g transform="translate(0,${br})">${armL}${body}${armR}${extra}${head}</g></g>`
+    legs + `<g transform="translate(0,${br})${run ? ' rotate(8 0 -175)' : ''}">${armL}${body}${armR}${extra}${head}${over}</g></g>`
 }
 
 export function bayangan({ x, y, s = 1, t = 0 }) {

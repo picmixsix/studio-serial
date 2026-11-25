@@ -1,4 +1,4 @@
-import { W, H, uid, rad, clamp, r2 } from './util.js'
+import { W, H, uid, lin, rad, clamp, r2 } from './util.js'
 import { drawBackground } from './backgrounds.js'
 import { tokoh, bayangan, mata, kabut, orang, lilin, kilat } from './chars.js'
 import { hud, extras, subtitle } from './overlay.js'
@@ -7,6 +7,14 @@ export * from './catalog.js'
 export { hud, extras, subtitle, wrapText } from './overlay.js'
 
 const MULT = { kecil: 0.7, sedang: 1, besar: 1.5, dekat: 2.4 }
+// Pewarnaan suasana: [warna atas, warna bawah, opasitas atas, opasitas bawah]
+const SUASANA_FX = {
+  pagi: ['#bfe0ff', '#ffe0a8', 0.16, 0.2], siang: ['#ffffff', '#fff4c8', 0.1, 0.1], senja: ['#7a3aa8', '#ff8a3d', 0.22, 0.24],
+  malam: ['#0a1048', '#050a28', 0.38, 0.3], dingin: ['#4a8fe0', '#2a4a9a', 0.2, 0.2], hangat: ['#ffb060', '#ff8a3a', 0.18, 0.14],
+  neon: ['#ff2bd6', '#18e0ff', 0.22, 0.22], hijau: ['#3aff8a', '#0a5a3a', 0.14, 0.22],
+}
+// Latar yang dipakai berulang diberi nuansa warna berbeda (putaran rona), supaya tidak terlihat sama.
+const VARIAN_HUE = [0, -32, 38, 170, -90, 110]
 const smooth = x => { const k = clamp(x, 0, 1); return k * k * (3 - 2 * k) }
 
 // sized: true = ukuran tetap 1080x1920 (untuk PNG), false = hanya viewBox (dashboard), 'fill' = 100% (untuk video)
@@ -40,7 +48,8 @@ export function artInner(scene, { t = 0, ta = Infinity, header = {}, cam = null 
   const c = camera(cam)
   const dekat = scene.ukuran === 'dekat'
   let out = `<defs><filter id="${u}db" x="-5%" y="-5%" width="110%" height="110%"><feGaussianBlur stdDeviation="9"/></filter></defs>`
-  out += `<g${c.bg ? ` transform="${c.bg}"` : ''}${dekat && scene.tokoh ? ` filter="url(#${u}db)"` : ''}>${bg.svg}</g>`
+  const hue = VARIAN_HUE[(scene.varian || 0) % VARIAN_HUE.length]
+  out += `<g${hue ? ` style="filter:hue-rotate(${hue}deg)"` : ''}><g${c.bg ? ` transform="${c.bg}"` : ''}${dekat && scene.tokoh ? ` filter="url(#${u}db)"` : ''}>${bg.svg}</g></g>`
   let fg = ''
   const P = bg.props || {}
   if (objs.includes('bayangan')) fg += bayangan({ ...P.bayangan, t })
@@ -62,13 +71,15 @@ export function artInner(scene, { t = 0, ta = Infinity, header = {}, cam = null 
       const k = smooth(ta / 1.8)
       const from = scene.masuk === 'kiri' ? -x - 300 : W - x + 300
       x += from * (1 - k)
-      if (k < 1) { pose = 'jalan'; flip = scene.masuk === 'kanan' }
+      if (k < 1) { pose = scene.lari ? 'berlari' : 'jalan'; flip = scene.masuk === 'kanan' }
     }
-    fg += tokoh({ pose, ekspresi: scene.tokoh.ekspresi, x, y, s: a.s * m, flip, t: scene.masuk && ta < 1.8 ? ta : t, u })
+    fg += tokoh({ pose, ekspresi: scene.tokoh.ekspresi, x, y, s: a.s * m, flip, t: scene.masuk && ta < 1.8 ? ta : t, u, baju: scene.baju })
   }
   if (objs.includes('kabut')) fg += kabut({ t, u })
   out += `<g${c.fg ? ` transform="${c.fg}"` : ''}>${fg}</g>`
   if (objs.includes('kilat')) out += kilat({ t })
+  const sf = SUASANA_FX[scene.suasana]
+  if (sf) out += `<defs>${lin(u + 'sg', 0, 0, 0, 1, [[0, sf[0], sf[2]], [1, sf[1], sf[3]]])}</defs><rect width="${W}" height="${H}" fill="url(#${u}sg)"/>`
   const ef = scene.efek || []
   out += `<defs>${rad(u + 'vg', 0.5, 0.5, 0.78, [[0.45, '#000', 0], [1, '#000', ef.includes('gelap') ? 0.92 : 0.55]])}</defs><rect width="${W}" height="${H}" fill="url(#${u}vg)"/>`
   if (ef.includes('gelap')) out += `<rect width="${W}" height="${H}" fill="#000" opacity=".38"/>`

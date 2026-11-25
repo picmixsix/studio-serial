@@ -39,7 +39,9 @@ Kamu melangkah masuk.
 Kamu pilih apa?
 ```
 
-Panduan langkah demi langkah dari nol ada di **PANDUAN.md**. Daftar lengkap tag ada di menu **Panduan Tag** dan di `src/art/catalog.js`. Yang tersedia: 14 latar, 6 pose, 6 ekspresi, 6 objek (ditambah paket buatan sendiri). Tag yang salah ditulis tidak membuat bot gagal; dashboard menampilkan peringatan dan **Pratinjau cepat** memperlihatkan hasilnya langsung di browser.
+Panduan langkah demi langkah dari nol ada di **PANDUAN.md**. Daftar lengkap tag ada di menu **Panduan Tag** dan di `src/art/catalog.js`. Yang tersedia: 24 latar (rumah, jalan, persimpangan, halte, lift, kantor, kamar mandi, kelas, rumah sakit, atap, minimarket, dst.), 9 pose, 6 ekspresi, 8 objek, 9 suasana warna, 9 warna baju.
+
+**Variasi otomatis.** Tag yang tidak ditulis tidak lagi menyalin adegan sebelumnya: latar, ekspresi, pose, objek, dan suasana disimpulkan dari isi teks, posisi/ukuran/kamera bergantian, dan latar yang dipakai berulang diberi nuansa warna berbeda. Matikan dengan header `@variasi: tidak`. Tag yang salah ditulis tidak membuat bot gagal; dashboard menampilkan peringatan dan **Pratinjau cepat** memperlihatkan hasilnya langsung di browser.
 
 ## Paket adegan buatan sendiri
 
